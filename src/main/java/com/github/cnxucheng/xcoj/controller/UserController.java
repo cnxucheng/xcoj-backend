@@ -10,6 +10,7 @@ import com.github.cnxucheng.xcoj.exception.BusinessException;
 import com.github.cnxucheng.xcoj.model.dto.user.UserLoginDTO;
 import com.github.cnxucheng.xcoj.model.dto.user.UserRegisterDTO;
 import com.github.cnxucheng.xcoj.model.entity.User;
+import com.github.cnxucheng.xcoj.model.enums.UserRoleEnum;
 import com.github.cnxucheng.xcoj.model.vo.UserVO;
 import com.github.cnxucheng.xcoj.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,7 +76,6 @@ public class UserController {
 
     /**
      * 分页获取用户排名
-     *
      * @param pageRequest 分页请求
      */
     @PostMapping("/rank")
@@ -91,10 +91,11 @@ public class UserController {
         }
         Page<User> page = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper.orderByDesc(User::getAcceptedNum);
-        wrapper.orderByAsc(User::getSubmitNum);
+        wrapper.orderByDesc(User::getAcceptedNum)
+                .orderByAsc(User::getSubmitNum)
+                .eq(User::getUserRole, UserRoleEnum.USER.getValue())
+                .select(User::getUsername, User::getAcceptedNum, User::getSubmitNum);
         Page<User> result = userService.page(page, wrapper);
         return Result.success(userService.toVOPage(result));
     }
-
 }
