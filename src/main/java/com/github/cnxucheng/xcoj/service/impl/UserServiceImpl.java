@@ -11,17 +11,16 @@ import com.github.cnxucheng.xcoj.mapper.UserMapper;
 import com.github.cnxucheng.xcoj.model.dto.user.UserLoginDTO;
 import com.github.cnxucheng.xcoj.model.dto.user.UserRegisterDTO;
 import com.github.cnxucheng.xcoj.model.vo.UserVO;
+import com.github.cnxucheng.xcoj.service.UserAcceptService;
 import com.github.cnxucheng.xcoj.service.UserService;
 import com.github.cnxucheng.xcoj.model.entity.User;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +33,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
 
     private final String SALT = "xc_oj_xucheng";
+
+    @Resource
+    private UserAcceptService userAcceptService;
 
     @Override
     public UserVO login(UserLoginDTO userLoginDTO, HttpServletRequest request) {
@@ -98,6 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .userRole(user.getUserRole())
                 .submitNum(user.getSubmitNum())
                 .createTime(user.getCreateTime())
+                .solved(userAcceptService.getUserAcceptList(user.getUserId()))
                 .build();
     }
 

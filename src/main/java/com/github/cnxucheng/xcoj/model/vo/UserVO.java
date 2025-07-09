@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户登录vo
@@ -42,6 +43,8 @@ public class UserVO implements Serializable {
      * 用户提交题目数
      */
     private Integer submitNum;
+
+    private List<Long> solved;
 
     /**
      * 用户创建时间

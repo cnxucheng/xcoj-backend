@@ -3,6 +3,8 @@ package com.github.cnxucheng.xcoj.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.cnxucheng.xcoj.model.entity.UserAccept;
 
+import java.util.List;
+
 /**
  * UserAcceptService
  * @author : xucheng
@@ -10,4 +12,5 @@ import com.github.cnxucheng.xcoj.model.entity.UserAccept;
  */
 public interface UserAcceptService extends IService<UserAccept> {
 
+    List<Long> getUserAcceptList(Long userId);
 }
