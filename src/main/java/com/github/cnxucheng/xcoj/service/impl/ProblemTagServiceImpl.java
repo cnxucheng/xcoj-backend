@@ -8,7 +8,6 @@ import com.github.cnxucheng.xcoj.service.ProblemTagService;
 import com.github.cnxucheng.xcoj.model.entity.ProblemTag;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
