@@ -1,8 +1,10 @@
 package com.github.cnxucheng.xcoj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
+import com.github.cnxucheng.xcoj.common.MyPage;
 import com.github.cnxucheng.xcoj.constant.UserLoginState;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
 import com.github.cnxucheng.xcoj.mapper.UserMapper;
@@ -13,10 +15,14 @@ import com.github.cnxucheng.xcoj.service.UserService;
 import com.github.cnxucheng.xcoj.model.entity.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * UserServiceImpl
@@ -93,6 +99,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .submitNum(user.getSubmitNum())
                 .createTime(user.getCreateTime())
                 .build();
+    }
+
+    @Override
+    public MyPage<UserVO> toVOPage(Page<User> userPage) {
+        List<User> userList = userPage.getRecords();
+        MyPage<UserVO> userVOPage = new MyPage<>();
+        if (CollectionUtils.isEmpty(userList)) {
+            return userVOPage;
+        }
+        List<UserVO> userVOList = userList.stream().map(this::toVO).collect(Collectors.toList());
+        userVOPage.setData(userVOList);
+        userVOPage.setTotal(userPage.getTotal());
+        userVOPage.setCurrent(userVOPage.getCurrent());
+        userVOPage.setPageSize(userVOPage.getPageSize());
+        userVOPage.setTotalPages(userPage.getPages());
+        return userVOPage;
     }
 }
 

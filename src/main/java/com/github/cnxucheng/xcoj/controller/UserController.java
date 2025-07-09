@@ -1,10 +1,16 @@
 package com.github.cnxucheng.xcoj.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
+import com.github.cnxucheng.xcoj.common.PageRequest;
 import com.github.cnxucheng.xcoj.common.Result;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
 import com.github.cnxucheng.xcoj.model.dto.user.UserLoginDTO;
 import com.github.cnxucheng.xcoj.model.dto.user.UserRegisterDTO;
+import com.github.cnxucheng.xcoj.model.entity.User;
+import com.github.cnxucheng.xcoj.model.vo.UserVO;
 import com.github.cnxucheng.xcoj.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -65,4 +72,29 @@ public class UserController {
         }
         return Result.success(userService.register(userRegisterDTO));
     }
+
+    /**
+     * 分页获取用户排名
+     *
+     * @param pageRequest 分页请求
+     */
+    @PostMapping("/rank")
+    public Result<?> rank(@RequestBody PageRequest pageRequest) {
+        if (pageRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        if (pageRequest.getPageSize() > 50 || pageRequest.getPageSize() < 1) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "不合法请求");
+        }
+        if (pageRequest.getCurrent() < 1) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "不合法请求");
+        }
+        Page<User> page = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(User::getAcceptedNum);
+        wrapper.orderByAsc(User::getSubmitNum);
+        Page<User> result = userService.page(page, wrapper);
+        return Result.success(userService.toVOPage(result));
+    }
+
 }

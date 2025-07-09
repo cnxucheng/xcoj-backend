@@ -1,6 +1,8 @@
 package com.github.cnxucheng.xcoj.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.cnxucheng.xcoj.common.MyPage;
 import com.github.cnxucheng.xcoj.model.dto.user.UserLoginDTO;
 import com.github.cnxucheng.xcoj.model.dto.user.UserRegisterDTO;
 import com.github.cnxucheng.xcoj.model.entity.User;
@@ -23,4 +25,6 @@ public interface UserService extends IService<User> {
     User getLoginUser(HttpServletRequest request);
 
     UserVO toVO(User user);
+
+    MyPage<UserVO> toVOPage(Page<User> userPage);
 }
