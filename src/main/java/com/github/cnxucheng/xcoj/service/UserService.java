@@ -1,9 +1,13 @@
 package com.github.cnxucheng.xcoj.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.cnxucheng.xcoj.model.dto.user.UserLoginDTO;
+import com.github.cnxucheng.xcoj.model.dto.user.UserRegisterDTO;
 import com.github.cnxucheng.xcoj.model.entity.User;
+import com.github.cnxucheng.xcoj.model.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * UserService
@@ -12,4 +16,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface UserService extends IService<User> {
 
+    UserVO login(UserLoginDTO userLoginDTO, HttpServletRequest request);
+
+    Long register(UserRegisterDTO userRegisterDTO);
+
+    User getLoginUser(HttpServletRequest request);
+
+    UserVO toVO(User user);
 }

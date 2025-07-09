@@ -1,6 +1,9 @@
 package com.github.cnxucheng.xcoj.aop;
 
 import com.github.cnxucheng.xcoj.annotation.AuthCheck;
+import com.github.cnxucheng.xcoj.common.ErrorCode;
+import com.github.cnxucheng.xcoj.exception.BusinessException;
+import com.github.cnxucheng.xcoj.model.entity.User;
 import com.github.cnxucheng.xcoj.model.enums.UserRoleEnum;
 import com.github.cnxucheng.xcoj.service.UserService;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -31,7 +34,16 @@ public class AuthInterceptor {
         UserRoleEnum role = authCheck.role();
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-        // todo
+
+        User loginUser = userService.getLoginUser(request);
+        UserRoleEnum userRoleEnum = UserRoleEnum.getEnum(loginUser.getUserRole());
+
+        if (userRoleEnum == null) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "用户权限异常");
+        }
+        if (role.getWeight() > userRoleEnum.getWeight()) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
 
         return joinPoint.proceed();
     }

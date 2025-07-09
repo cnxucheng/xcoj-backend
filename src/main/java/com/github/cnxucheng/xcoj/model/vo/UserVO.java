@@ -1,6 +1,9 @@
 package com.github.cnxucheng.xcoj.model.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +14,9 @@ import java.util.Date;
  * @since : 2025-7-9
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserVO implements Serializable {
     /**
      * 用户id
