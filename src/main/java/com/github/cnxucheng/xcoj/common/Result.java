@@ -39,7 +39,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> success(T data) {
-        return new Result<>(ErrorCode.SUCCESS.getCode(), "Success", data);
+        return new Result<>(ErrorCode.SUCCESS.getCode(), "success", data);
     }
 
     public static <T> Result<T> error(ErrorCode errorCode) {

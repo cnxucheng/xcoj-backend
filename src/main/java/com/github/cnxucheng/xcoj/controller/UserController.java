@@ -34,7 +34,7 @@ public class UserController {
         if (username == null || password == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        if (username.length() < 5 || username.length() > 20) {
+        if (username.length() < 4 || username.length() > 20) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         if (password.length() < 6 || password.length() > 20) {
@@ -54,7 +54,7 @@ public class UserController {
         if (username == null || password == null || checkPassword == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        if (username.length() < 5 || username.length() > 20) {
+        if (username.length() < 4 || username.length() > 20) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户名过短或过长");
         }
         if (password.length() < 6 || password.length() > 20) {
