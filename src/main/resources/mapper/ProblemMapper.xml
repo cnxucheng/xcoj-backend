@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.cnxucheng.xcoj.mapper.ProblemMapper">
+
+    <resultMap id="BaseResultMap" type="com.github.cnxucheng.xcoj.model.entity.Problem">
+            <id property="problemId" column="problemId" />
+            <result property="title" column="title" />
+            <result property="description" column="description" />
+            <result property="inputDescription" column="inputDescription" />
+            <result property="outputDescription" column="outputDescription" />
+            <result property="note" column="note" />
+            <result property="sample" column="sample" />
+            <result property="timeLimit" column="timeLimit" />
+            <result property="memoryLimit" column="memoryLimit" />
+            <result property="judgeCaseURL" column="judgeCaseURL" />
+            <result property="acceptedNum" column="acceptedNum" />
+            <result property="submitNum" column="submitNum" />
+            <result property="userId" column="userId" />
+            <result property="createTime" column="createTime" />
+            <result property="updateTime" column="updateTime" />
+            <result property="isHidden" column="isHidden" />
+            <result property="isDelete" column="isDelete" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        problemId,title,description,inputDescription,outputDescription,note,
+        sample,timeLimit,memoryLimit,judgeCaseURL,acceptedNum,
+        submitNum,userId,createTime,updateTime,isHidden,
+        isDelete
+    </sql>
+</mapper>

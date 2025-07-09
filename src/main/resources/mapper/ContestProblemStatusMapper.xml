@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.cnxucheng.xcoj.mapper.ContestProblemStatusMapper">
+
+    <resultMap id="BaseResultMap" type="com.github.cnxucheng.xcoj.model.entity.ContestProblemStatus">
+            <id property="id" column="id" />
+            <result property="contestId" column="contestId" />
+            <result property="userId" column="userId" />
+            <result property="problemId" column="problemId" />
+            <result property="problemIndex" column="problemIndex" />
+            <result property="firstAcTime" column="firstAcTime" />
+            <result property="wrongCount" column="wrongCount" />
+            <result property="isAc" column="isAc" />
+            <result property="createTime" column="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,contestId,userId,problemId,problemIndex,firstAcTime,
+        wrongCount,isAc,createTime
+    </sql>
+</mapper>

@@ -1,0 +1,74 @@
+package com.github.cnxucheng.xcoj.model.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.util.Date;
+import lombok.Data;
+
+/**
+ * 提交记录表
+ * @author : xucheng
+ * @since : 2025-7-8
+ */
+@TableName(value ="submission")
+@Data
+public class Submission {
+    /**
+     * 提交id
+     */
+    @TableId(type = IdType.AUTO)
+    private Long submissionId;
+
+    /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
+     * 题目id
+     */
+    private Long problemId;
+
+    /**
+     * 比赛id, 如果不为空, 则表示为比赛中的提交
+     */
+    private Long contestId;
+
+    /**
+     * 编程语言
+     */
+    private String lang;
+
+    /**
+     * 提交代码
+     */
+    private String code;
+
+    /**
+     * 判题结果
+     */
+    private String judgeResult;
+
+    /**
+     * 时间使用
+     */
+    private Integer usedTime;
+
+    /**
+     * 空间使用
+     */
+    private Integer usedMemory;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 是否删除
+     */
+    @TableLogic
+    private Integer isDelete;
+}
