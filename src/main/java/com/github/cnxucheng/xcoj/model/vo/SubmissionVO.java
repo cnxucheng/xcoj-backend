@@ -1,12 +1,15 @@
-package com.github.cnxucheng.xcoj.model.dto.submision;
+package com.github.cnxucheng.xcoj.model.vo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
-import sun.util.resources.cldr.gv.LocaleNames_gv;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
-public class SubmissionQueryDTO implements Serializable {
+public class SubmissionVO implements Serializable {
     /**
      * 提交id
      */
@@ -38,12 +41,17 @@ public class SubmissionQueryDTO implements Serializable {
     private String judgeResult;
 
     /**
-     * 页码
+     * 时间使用
      */
-    private Long current;
+    private Integer usedTime;
 
     /**
-     * 大小
+     * 空间使用
      */
-    private Integer size;
+    private Integer usedMemory;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 }

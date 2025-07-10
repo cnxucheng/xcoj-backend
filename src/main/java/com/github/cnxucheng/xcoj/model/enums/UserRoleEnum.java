@@ -30,4 +30,13 @@ public enum UserRoleEnum {
         }
         return null;
     }
+
+    public static Integer getWeight(String value) {
+        for (UserRoleEnum e : UserRoleEnum.values()) {
+            if (e.getValue().equals(value)) {
+                return e.getWeight();
+            }
+        }
+        return 0;
+    }
 }
