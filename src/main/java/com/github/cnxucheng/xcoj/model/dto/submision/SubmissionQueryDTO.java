@@ -1,8 +1,6 @@
 package com.github.cnxucheng.xcoj.model.dto.submision;
 
 import lombok.Data;
-import sun.util.resources.cldr.gv.LocaleNames_gv;
-
 import java.io.Serializable;
 
 @Data

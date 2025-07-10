@@ -31,12 +31,9 @@ public class ProblemController {
     @Resource
     private UserService userService;
 
-    @Resource
-    private ProblemTagService problemTagService;
-
     @GetMapping("/")
     @AuthCheck(role = UserRoleEnum.USER)
-    public Result<?> findById(@RequestParam(value = "id", required = true) Integer id, HttpServletRequest request) {
+    public Result<?> findById(@RequestParam(value = "id") Integer id, HttpServletRequest request) {
         Problem problem  = problemService.getById(id);
         User user = userService.getLoginUser(request);
         UserRoleEnum userRoleEnum = Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole()));

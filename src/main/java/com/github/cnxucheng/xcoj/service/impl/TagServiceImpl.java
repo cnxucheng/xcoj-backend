@@ -21,7 +21,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
     @Override
     public void addIf(List<String> tags) {
         for (String tag : tags) {
-            LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<Tag>();
+            LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Tag::getName, tag);
             if (this.getOne(queryWrapper) == null) {
                 Tag newTag = new Tag();
