@@ -1,10 +1,13 @@
 package com.github.cnxucheng.xcoj.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.cnxucheng.xcoj.mapper.TagMapper;
 import com.github.cnxucheng.xcoj.service.TagService;
 import com.github.cnxucheng.xcoj.model.entity.Tag;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * TagServiceImpl
@@ -15,6 +18,18 @@ import org.springframework.stereotype.Service;
 public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
     implements TagService {
 
+    @Override
+    public void addIf(List<String> tags) {
+        for (String tag : tags) {
+            LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<Tag>();
+            queryWrapper.eq(Tag::getName, tag);
+            if (this.getOne(queryWrapper) == null) {
+                Tag newTag = new Tag();
+                newTag.setName(tag);
+                this.save(newTag);
+            }
+        }
+    }
 }
 
 

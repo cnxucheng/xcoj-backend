@@ -26,7 +26,7 @@
 
     <sql id="Base_Column_List">
         problemId,title,description,inputDescription,outputDescription,note,
-        sample,timeLimit,memoryLimit,judgeCaseURL,acceptedNum,
+        sample,timeLimit,memoryLimit,judgeCase,acceptedNum,
         submitNum,userId,createTime,updateTime,isHidden,
         isDelete
     </sql>

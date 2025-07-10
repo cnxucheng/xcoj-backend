@@ -30,7 +30,7 @@ CREATE TABLE problem (
     sample TEXT NULL COMMENT '题目样例（json）',
     timeLimit int NOT NULL COMMENT '题目时间限制(MS)',
     memoryLimit int NOT NULL COMMENT '空间限制(KB)',
-    judgeCaseURL VARCHAR(1024) NOT NULL COMMENT '判题数据地址',
+    judgeCase text NOT NULL COMMENT '判题数据(json)',
     acceptedNum INT DEFAULT 0 COMMENT '通过数',
     submitNum INT DEFAULT 0 COMMENT '提交数',
     userId BIGINT NOT NULL COMMENT '创建人id',

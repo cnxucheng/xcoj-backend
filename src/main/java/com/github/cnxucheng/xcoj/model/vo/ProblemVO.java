@@ -1,9 +1,14 @@
 package com.github.cnxucheng.xcoj.model.vo;
 
+import com.github.cnxucheng.xcoj.model.entity.TestCase;
+import com.github.cnxucheng.xcoj.model.entity.Tag;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
 /**
  * 题目vo
@@ -11,6 +16,9 @@ import java.util.Date;
  * @since : 2025-7-9
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProblemVO implements Serializable {
     /**
      * 题目id
@@ -43,9 +51,14 @@ public class ProblemVO implements Serializable {
     private String note;
 
     /**
-     * 题目样例（json）
+     * 题目样例
      */
-    private String sample;
+    private List<TestCase> sample;
+
+    /**
+     * 测试数据
+     */
+    private List<TestCase> testCase;
 
     /**
      * 题目时间限制(MS)
@@ -58,6 +71,11 @@ public class ProblemVO implements Serializable {
     private Integer memoryLimit;
 
     /**
+     * 标签
+     */
+    private List<Tag> tags;
+
+    /**
      * 通过数
      */
     private Integer acceptedNum;
@@ -68,17 +86,7 @@ public class ProblemVO implements Serializable {
     private Integer submitNum;
 
     /**
-     * 创建人id
+     * 是否删除
      */
-    private Long userId;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private Integer sHidden;
 }

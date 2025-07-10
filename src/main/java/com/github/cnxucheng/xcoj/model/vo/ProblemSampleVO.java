@@ -1,8 +1,13 @@
 package com.github.cnxucheng.xcoj.model.vo;
 
+import com.github.cnxucheng.xcoj.model.entity.Tag;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 题目简单vo, 不包含样例、题目内容等数据
@@ -10,6 +15,9 @@ import java.io.Serializable;
  * @since : 2025-7-9
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProblemSampleVO implements Serializable {
     /**
      * 题目id
@@ -20,6 +28,11 @@ public class ProblemSampleVO implements Serializable {
      * 题目标题
      */
     private String title;
+
+    /**
+     * 标签
+     */
+    private List<Tag> tags;
 
     /**
      * 通过数

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class Sample implements Serializable {
+public class TestCase implements Serializable {
 
     private String input;
 

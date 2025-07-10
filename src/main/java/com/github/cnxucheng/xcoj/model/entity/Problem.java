@@ -62,9 +62,9 @@ public class Problem {
     private Integer memoryLimit;
 
     /**
-     * 判题数据地址
+     * 判题数据
      */
-    private String judgeCaseURL;
+    private String judgeCase;
 
     /**
      * 通过数

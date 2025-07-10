@@ -12,4 +12,5 @@ import java.util.List;
  */
 public interface TagService extends IService<Tag> {
 
+    void addIf(List<String> tags);
 }

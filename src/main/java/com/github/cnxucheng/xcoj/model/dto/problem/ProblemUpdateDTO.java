@@ -1,8 +1,7 @@
 package com.github.cnxucheng.xcoj.model.dto.problem;
 
-import com.github.cnxucheng.xcoj.model.entity.Sample;
+import com.github.cnxucheng.xcoj.model.entity.TestCase;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.List;
@@ -47,7 +46,12 @@ public class ProblemUpdateDTO implements Serializable {
     /**
      * 题目样例（json）
      */
-    private List<Sample> sample;
+    private List<TestCase> sample;
+
+    /**
+     * 标签
+     */
+    private List<String> tags;
 
     /**
      * 题目时间限制(MS)
@@ -60,9 +64,9 @@ public class ProblemUpdateDTO implements Serializable {
     private Integer memoryLimit;
 
     /**
-     * 判题数据地址
+     * 判题数据
      */
-    private MultipartFile judgeCaseZIP;
+    private List<TestCase> judgeCase;
 
     /**
      * 是否隐藏
