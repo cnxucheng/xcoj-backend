@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
+import com.github.cnxucheng.xcoj.common.MyPage;
 import com.github.cnxucheng.xcoj.common.PageRequest;
 import com.github.cnxucheng.xcoj.common.Result;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
@@ -13,10 +14,7 @@ import com.github.cnxucheng.xcoj.model.entity.User;
 import com.github.cnxucheng.xcoj.model.enums.UserRoleEnum;
 import com.github.cnxucheng.xcoj.model.vo.UserVO;
 import com.github.cnxucheng.xcoj.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +31,7 @@ public class UserController {
      * 用户登录
      */
     @PostMapping("/login")
-    public Result<?> login(@RequestBody UserLoginDTO userLoginDTO, HttpServletRequest request) {
+    public Result<UserVO> login(@RequestBody UserLoginDTO userLoginDTO, HttpServletRequest request) {
         if (userLoginDTO == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -52,7 +50,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public Result<?> register(@RequestBody UserRegisterDTO userRegisterDTO) {
+    public Result<Long> register(@RequestBody UserRegisterDTO userRegisterDTO) {
         if (userRegisterDTO == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -74,12 +72,17 @@ public class UserController {
         return Result.success(userService.register(userRegisterDTO));
     }
 
+    @GetMapping("/getLoginUser")
+    public Result<UserVO> getLoginUser(HttpServletRequest request) {
+        return Result.success(userService.toVO(userService.getLoginUser(request)));
+    }
+
     /**
      * 分页获取用户排名
      * @param pageRequest 分页请求
      */
     @PostMapping("/rank")
-    public Result<?> rank(@RequestBody PageRequest pageRequest) {
+    public Result<MyPage<UserVO>> rank(@RequestBody PageRequest pageRequest) {
         if (pageRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

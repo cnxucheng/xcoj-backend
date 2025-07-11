@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.cnxucheng.xcoj.annotation.AuthCheck;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
+import com.github.cnxucheng.xcoj.common.MyPage;
 import com.github.cnxucheng.xcoj.common.PageRequest;
 import com.github.cnxucheng.xcoj.common.Result;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
@@ -11,6 +12,7 @@ import com.github.cnxucheng.xcoj.model.entity.Problem;
 
 import com.github.cnxucheng.xcoj.model.entity.User;
 import com.github.cnxucheng.xcoj.model.enums.UserRoleEnum;
+import com.github.cnxucheng.xcoj.model.vo.ProblemSampleVO;
 import com.github.cnxucheng.xcoj.model.vo.ProblemVO;
 import com.github.cnxucheng.xcoj.service.ProblemService;
 import com.github.cnxucheng.xcoj.service.ProblemTagService;
@@ -33,7 +35,7 @@ public class ProblemController {
 
     @GetMapping("/")
     @AuthCheck(role = UserRoleEnum.USER)
-    public Result<?> findById(@RequestParam(value = "id") Integer id, HttpServletRequest request) {
+    public Result<ProblemVO> findById(@RequestParam(value = "id") Integer id, HttpServletRequest request) {
         Problem problem  = problemService.getById(id);
         User user = userService.getLoginUser(request);
         UserRoleEnum userRoleEnum = Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole()));
@@ -53,7 +55,7 @@ public class ProblemController {
     }
 
     @PostMapping("/list")
-    public Result<?> find(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
+    public Result<MyPage<ProblemSampleVO>> find(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
         LambdaQueryWrapper<Problem> queryWrapper = new LambdaQueryWrapper<>();
         // 如果不是管理员
         User user = userService.getLoginUser(request);

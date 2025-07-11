@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.cnxucheng.xcoj.annotation.AuthCheck;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
+import com.github.cnxucheng.xcoj.common.MyPage;
 import com.github.cnxucheng.xcoj.common.Result;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
 import com.github.cnxucheng.xcoj.model.dto.submision.SubmissionQueryDTO;
@@ -12,6 +13,7 @@ import com.github.cnxucheng.xcoj.model.dto.submision.SubmissionSubmitDTO;
 import com.github.cnxucheng.xcoj.model.entity.Submission;
 import com.github.cnxucheng.xcoj.model.entity.User;
 import com.github.cnxucheng.xcoj.model.enums.UserRoleEnum;
+import com.github.cnxucheng.xcoj.model.vo.SubmissionVO;
 import com.github.cnxucheng.xcoj.service.SubmissionService;
 import com.github.cnxucheng.xcoj.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +43,7 @@ public class SubmissionController {
     }
 
     @PostMapping("/list")
-    public Result<?> list(@RequestBody SubmissionQueryDTO submissionQueryDTO) {
+    public Result<MyPage<SubmissionVO>> list(@RequestBody SubmissionQueryDTO submissionQueryDTO) {
         if (submissionQueryDTO == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -56,7 +58,7 @@ public class SubmissionController {
 
     @GetMapping("/detail")
     @AuthCheck(role = UserRoleEnum.USER)
-    public Result<?> getDetail(@RequestParam("id") Long id, HttpServletRequest request) {
+    public Result<Submission> getDetail(@RequestParam("id") Long id, HttpServletRequest request) {
         Submission submission = submissionService.getById(id);
         User user = userService.getLoginUser(request);
         if (!Objects.equals(user.getUserId(), submission.getUserId()) ||
