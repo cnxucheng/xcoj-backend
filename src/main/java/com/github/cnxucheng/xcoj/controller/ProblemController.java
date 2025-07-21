@@ -34,10 +34,11 @@ public class ProblemController {
 
     @GetMapping("/")
     @AuthCheck(role = UserRoleEnum.USER)
+    @SuppressWarnings("all")
     public Result<ProblemVO> findById(@RequestParam(value = "id") Integer id, HttpServletRequest request) {
         Problem problem  = problemService.getById(id);
         User user = userService.getLoginUser(request);
-        UserRoleEnum userRoleEnum = Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole()));
+        UserRoleEnum userRoleEnum = (user != null ? UserRoleEnum.getEnum(user.getUserRole()) : UserRoleEnum.BAN);
         // 如果是隐藏的题目，要求具有管理员权限
         if (problem.getIsHidden() == 1) {
             if (userRoleEnum.getWeight() <
