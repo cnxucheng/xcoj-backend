@@ -6,6 +6,7 @@ import com.github.cnxucheng.xcoj.exception.BusinessException;
 import com.github.cnxucheng.xcoj.model.entity.User;
 import com.github.cnxucheng.xcoj.model.enums.UserRoleEnum;
 import com.github.cnxucheng.xcoj.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Aspect
 @Component
+@Slf4j
 public class AuthInterceptor {
 
     @Resource
@@ -34,10 +36,13 @@ public class AuthInterceptor {
         UserRoleEnum role = authCheck.role();
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-
         User loginUser = userService.getLoginUser(request);
-        UserRoleEnum userRoleEnum = UserRoleEnum.getEnum(loginUser.getUserRole());
-
+        UserRoleEnum userRoleEnum = null;
+        if (loginUser == null) {
+            userRoleEnum = UserRoleEnum.BAN;
+        } else {
+            userRoleEnum = UserRoleEnum.getEnum(loginUser.getUserRole());
+        }
         if (userRoleEnum == null) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "用户权限异常");
         }

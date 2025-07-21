@@ -15,7 +15,6 @@ import com.github.cnxucheng.xcoj.model.enums.UserRoleEnum;
 import com.github.cnxucheng.xcoj.model.vo.ProblemSampleVO;
 import com.github.cnxucheng.xcoj.model.vo.ProblemVO;
 import com.github.cnxucheng.xcoj.service.ProblemService;
-import com.github.cnxucheng.xcoj.service.ProblemTagService;
 import com.github.cnxucheng.xcoj.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,14 +56,18 @@ public class ProblemController {
     @PostMapping("/list")
     public Result<MyPage<ProblemSampleVO>> find(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
         LambdaQueryWrapper<Problem> queryWrapper = new LambdaQueryWrapper<>();
+        Page<Problem> page = new Page<>();
         // 如果不是管理员
         User user = userService.getLoginUser(request);
-        if (Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole())).getWeight() <
+        if (user == null) {
+            Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
+            page = problemService.page(qpage, queryWrapper);
+        } else if (Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole())).getWeight() <
                 UserRoleEnum.ADMIN.getWeight()) {
             queryWrapper.eq(Problem::getIsHidden, 0);
+            Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
+            page = problemService.page(qpage, queryWrapper);
         }
-        Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
-        Page<Problem> page = problemService.page(qpage, queryWrapper);
         return Result.success(problemService.getProblemSampleVOPage(page));
     }
 }

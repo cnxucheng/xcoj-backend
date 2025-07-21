@@ -81,13 +81,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         Object userObj = request.getSession().getAttribute(UserLoginState.USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser == null || currentUser.getUserId() == null) {
-            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+            return null;
         }
         long userId = currentUser.getUserId();
         currentUser = this.getById(userId);
-        if (currentUser == null) {
-            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
-        }
         return currentUser;
     }
 
