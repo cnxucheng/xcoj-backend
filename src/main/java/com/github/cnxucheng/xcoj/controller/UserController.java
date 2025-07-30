@@ -1,7 +1,6 @@
 package com.github.cnxucheng.xcoj.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
 import com.github.cnxucheng.xcoj.common.MyPage;
@@ -12,13 +11,14 @@ import com.github.cnxucheng.xcoj.model.dto.user.UserLoginDTO;
 import com.github.cnxucheng.xcoj.model.dto.user.UserRegisterDTO;
 import com.github.cnxucheng.xcoj.model.entity.User;
 import com.github.cnxucheng.xcoj.model.enums.UserRoleEnum;
+import com.github.cnxucheng.xcoj.model.vo.UserRankVO;
 import com.github.cnxucheng.xcoj.model.vo.UserVO;
 import com.github.cnxucheng.xcoj.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/user")
@@ -74,7 +74,11 @@ public class UserController {
 
     @GetMapping("/getLoginUser")
     public Result<UserVO> getLoginUser(HttpServletRequest request) {
-        return Result.success(userService.toVO(userService.getLoginUser(request)));
+        User user = userService.getLoginUser(request);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        return Result.success(userService.toVO(user));
     }
 
     /**
@@ -82,7 +86,7 @@ public class UserController {
      * @param pageRequest 分页请求
      */
     @PostMapping("/rank")
-    public Result<MyPage<UserVO>> rank(@RequestBody PageRequest pageRequest) {
+    public Result<MyPage<UserRankVO>> rank(@RequestBody PageRequest pageRequest) {
         if (pageRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -99,6 +103,30 @@ public class UserController {
                 .eq(User::getUserRole, UserRoleEnum.USER.getValue())
                 .select(User::getUsername, User::getAcceptedNum, User::getSubmitNum);
         Page<User> result = userService.page(page, wrapper);
-        return Result.success(userService.toVOPage(result));
+        
+        MyPage<UserRankVO> res = new MyPage<>();
+        res.setCurrent(result.getCurrent());
+        res.setTotal(result.getTotal());
+        res.setPageSize((int) result.getSize());
+        res.setTotalPages(result.getPages());
+
+        ArrayList<UserRankVO> resList = new ArrayList<>();
+        for (User user : result.getRecords()) {
+            UserRankVO vo = UserRankVO.builder()
+                    .username(user.getUsername())
+                    .acceptedNum(user.getAcceptedNum())
+                    .submitNum(user.getSubmitNum())
+                    .build();
+            resList.add(vo);
+        }
+        res.setData(resList);
+        
+        return Result.success(res);
+    }
+
+    @PostMapping("/logout")
+    public Result<?> logout(HttpServletRequest request) {
+        userService.logout(request);
+        return Result.success("ok");
     }
 }

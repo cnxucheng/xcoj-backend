@@ -11,9 +11,9 @@ public class SubmissionQueryDTO implements Serializable {
     private Long submissionId;
 
     /**
-     * 用户id
+     * 用户名
      */
-    private Long userId;
+    private String username;
 
     /**
      * 题目id

@@ -27,4 +27,6 @@ public interface UserService extends IService<User> {
     UserVO toVO(User user);
 
     MyPage<UserVO> toVOPage(Page<User> userPage);
+
+    void logout(HttpServletRequest request);
 }

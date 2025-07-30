@@ -32,7 +32,7 @@ public class ProblemSampleVO implements Serializable {
     /**
      * 标签
      */
-    private List<Tag> tags;
+    private List<String> tags;
 
     /**
      * 通过数

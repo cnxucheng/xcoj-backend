@@ -70,46 +70,6 @@ CREATE TABLE user_accept (
     UNIQUE KEY uq_user_problem (userId, problemId)
 ) COMMENT='用户通过题目表';
 
--- 比赛表
-CREATE TABLE contest (
-    contestId BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '比赛id',
-    contestTitle VARCHAR(128) NOT NULL COMMENT '比赛名称',
-    contestDescription TEXT NULL COMMENT '比赛描述',
-    beginTime DATETIME NOT NULL COMMENT '比赛开始时间',
-    endTime DATETIME NOT NULL COMMENT '比赛结束时间',
-    userId BIGINT NOT NULL COMMENT '创建人id',
-    isVisible TINYINT DEFAULT 0 COMMENT '是否对普通用户可见'
-) COMMENT='比赛表';
-
--- 比赛题目映射表
-CREATE TABLE contest_problem (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键id',
-    contestId BIGINT NOT NULL COMMENT '比赛id',
-    problemId BIGINT NOT NULL COMMENT '题目id',
-    problemIndex VARCHAR(10) COMMENT '题目在比赛中的编号（如 A、B、C）',
-    acceptedNum INT DEFAULT 0 COMMENT '通过数',
-    submitNum INT DEFAULT 0 COMMENT '提交数',
-    INDEX idx_contest (contestId),
-    INDEX idx_problem (problemId),
-    UNIQUE KEY uq_contest_problem (contestId, problemId)
-) COMMENT='比赛题目映射表';
-
--- 比赛中用户每题的状态表
-CREATE TABLE contest_problem_status (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
-    contestId BIGINT NOT NULL COMMENT '比赛ID',
-    userId BIGINT NOT NULL COMMENT '用户ID',
-    problemId BIGINT NOT NULL COMMENT '题目ID',
-    problemIndex CHAR(10) NOT NULL COMMENT '比赛题号（如 A、B、C）',
-    firstAcTime INT DEFAULT NULL COMMENT '首次AC所用时间（分钟）',
-    wrongCount INT DEFAULT 0 COMMENT 'AC前的错误提交次数',
-    isAc TINYINT DEFAULT 0 COMMENT '是否通过（1表示通过，0表示未通过）',
-    createTime DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
-    UNIQUE KEY uq_contest_user_problem (contestId, userId, problemId),
-    INDEX idx_contest_user (contestId, userId),
-    INDEX idx_problem (problemId)
-) COMMENT='比赛中用户每题的状态表';
-
 -- 标签表
 CREATE TABLE tag (
     tagId BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '标签id',

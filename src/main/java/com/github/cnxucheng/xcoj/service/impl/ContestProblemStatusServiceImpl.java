@@ -1,7 +1,6 @@
 package com.github.cnxucheng.xcoj.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.cnxucheng.xcoj.mapper.ContestProblemStatusMapper;
 import com.github.cnxucheng.xcoj.service.ContestProblemStatusService;
 import com.github.cnxucheng.xcoj.model.entity.ContestProblemStatus;
 import org.springframework.stereotype.Service;

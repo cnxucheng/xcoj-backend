@@ -10,6 +10,7 @@ import com.github.cnxucheng.xcoj.exception.BusinessException;
 import com.github.cnxucheng.xcoj.mapper.UserMapper;
 import com.github.cnxucheng.xcoj.model.dto.user.UserLoginDTO;
 import com.github.cnxucheng.xcoj.model.dto.user.UserRegisterDTO;
+import com.github.cnxucheng.xcoj.model.vo.UserRankVO;
 import com.github.cnxucheng.xcoj.model.vo.UserVO;
 import com.github.cnxucheng.xcoj.service.UserAcceptService;
 import com.github.cnxucheng.xcoj.service.UserService;
@@ -20,6 +21,7 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -115,6 +117,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         userVOPage.setPageSize(userVOPage.getPageSize());
         userVOPage.setTotalPages(userPage.getPages());
         return userVOPage;
+    }
+
+    @Override
+    public void logout(HttpServletRequest request) {
+        request.getSession().removeAttribute(UserLoginState.USER_LOGIN_STATE);
     }
 }
 

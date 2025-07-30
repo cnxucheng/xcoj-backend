@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
@@ -14,7 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="submission")
 @Data
-public class Submission {
+public class Submission implements Serializable {
     /**
      * 提交id
      */

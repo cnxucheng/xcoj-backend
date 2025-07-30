@@ -49,7 +49,7 @@ public class ProblemController {
         ProblemVO problemVO = problemService.getProblemVO(problem);
         // 如果没有管理员权限，不能获取到测试数据
         if (userRoleEnum.getWeight() < UserRoleEnum.ADMIN.getWeight()) {
-            problemVO.setTestCase(null);
+            problemVO.setJudgeCase(null);
         }
         return Result.success(problemVO);
     }
@@ -57,15 +57,18 @@ public class ProblemController {
     @PostMapping("/list")
     public Result<MyPage<ProblemSampleVO>> find(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
         LambdaQueryWrapper<Problem> queryWrapper = new LambdaQueryWrapper<>();
-        Page<Problem> page = new Page<>();
-        // 如果不是管理员
+        Page<Problem> page;
         User user = userService.getLoginUser(request);
         if (user == null) {
             Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
+            queryWrapper.eq(Problem::getIsHidden, 0);
             page = problemService.page(qpage, queryWrapper);
         } else if (Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole())).getWeight() <
                 UserRoleEnum.ADMIN.getWeight()) {
             queryWrapper.eq(Problem::getIsHidden, 0);
+            Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
+            page = problemService.page(qpage, queryWrapper);
+        } else {
             Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
             page = problemService.page(qpage, queryWrapper);
         }

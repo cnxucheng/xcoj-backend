@@ -34,9 +34,11 @@ public class SubmissionController {
 
     @PostMapping("/submit")
     @AuthCheck(role = UserRoleEnum.USER)
-    public Result<?> submit(@RequestBody SubmissionSubmitDTO submitDTO) {
+    public Result<?> submit(@RequestBody SubmissionSubmitDTO submitDTO, HttpServletRequest request) {
         Submission submission = new Submission();
         BeanUtil.copyProperties(submitDTO, submission);
+        User user  = userService.getLoginUser(request);
+        submission.setUserId(user.getUserId());
         submissionService.save(submission);
         // todo 判题
         return Result.success("ok");
@@ -61,7 +63,7 @@ public class SubmissionController {
     public Result<Submission> getDetail(@RequestParam("id") Long id, HttpServletRequest request) {
         Submission submission = submissionService.getById(id);
         User user = userService.getLoginUser(request);
-        if (!Objects.equals(user.getUserId(), submission.getUserId()) ||
+        if (!Objects.equals(user.getUserId(), submission.getUserId()) &&
                 UserRoleEnum.getWeight(user.getUserRole()) < UserRoleEnum.getWeight(UserRoleEnum.ADMIN.getValue())) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }

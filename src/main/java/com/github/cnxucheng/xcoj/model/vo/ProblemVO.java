@@ -58,7 +58,7 @@ public class ProblemVO implements Serializable {
     /**
      * 测试数据
      */
-    private List<TestCase> testCase;
+    private List<TestCase> judgeCase;
 
     /**
      * 题目时间限制(MS)
@@ -73,7 +73,7 @@ public class ProblemVO implements Serializable {
     /**
      * 标签
      */
-    private List<Tag> tags;
+    private List<String> tags;
 
     /**
      * 通过数
@@ -88,5 +88,5 @@ public class ProblemVO implements Serializable {
     /**
      * 是否删除
      */
-    private Integer sHidden;
+    private Integer isHidden;
 }

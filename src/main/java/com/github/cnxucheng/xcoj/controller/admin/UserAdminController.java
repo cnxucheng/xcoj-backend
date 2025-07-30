@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 @RestController
@@ -42,23 +43,22 @@ public class UserAdminController {
 
     @PostMapping("/update")
     @AuthCheck(role = UserRoleEnum.ADMIN)
-    public Result<?> updateUser(@RequestBody UserUpdateDTO updateDTO) {
+    public Result<?> updateUser(@RequestBody UserUpdateDTO updateDTO, HttpServletRequest request) {
         if (Objects.requireNonNull(UserRoleEnum.getEnum(updateDTO.getUserRole())).getWeight()
                 > UserRoleEnum.USER.getWeight()) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
-        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(User::getUsername, updateDTO.getUsername())
-                .set(User::getPassword, updateDTO.getPassword())
-                .set(User::getUserRole, updateDTO.getUserRole())
-                .eq(User::getUserId, updateDTO.getUserId());
-        userService.update(updateWrapper);
-        return Result.success("ok");
-    }
 
-    @PostMapping("/setAdmin")
-    @AuthCheck(role = UserRoleEnum.ROOT)
-    public Result<?> adminUser(@RequestBody UserUpdateDTO updateDTO) {
+        UserRoleEnum userRoleEnum = UserRoleEnum.getEnum(updateDTO.getUserRole());
+        if (userRoleEnum == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "不存在此权限");
+        }
+
+        UserRoleEnum adminUserRoleEnum = UserRoleEnum.getEnum(userService.getLoginUser(request).getUserRole());
+        if (userRoleEnum.getWeight() > UserRoleEnum.USER.getWeight() && adminUserRoleEnum != UserRoleEnum.ROOT) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(User::getUserRole, updateDTO.getUserRole())
                 .eq(User::getUserId, updateDTO.getUserId());

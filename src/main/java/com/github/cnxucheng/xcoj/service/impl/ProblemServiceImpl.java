@@ -25,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,12 +96,16 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
     @Override
     public ProblemSampleVO getProblemSampleVO(Problem problem) {
         List<Tag> tags = getTagsByProblemId(problem.getProblemId());
+        List<String> tagsName = new ArrayList<>();
+        for (Tag tag : tags) {
+            tagsName.add(tag.getName());
+        }
         return ProblemSampleVO.builder()
                 .problemId(problem.getProblemId())
                 .title(problem.getTitle())
                 .acceptedNum(problem.getAcceptedNum())
                 .submitNum(problem.getSubmitNum())
-                .tags(tags)
+                .tags(tagsName)
                 .build();
     }
 
@@ -111,9 +116,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
         List<TestCase> samples = JSONUtil.toList(problem.getSample(), TestCase.class);
         problemVO.setSample(samples);
         List<TestCase> testCases = JSONUtil.toList(problem.getJudgeCase(), TestCase.class);
-        problemVO.setTestCase(testCases);
+        problemVO.setJudgeCase(testCases);
         List<Tag> tags = getTagsByProblemId(problem.getProblemId());
-        problemVO.setTags(tags);
+        List<String> tagsName = new ArrayList<>();
+        for (Tag tag : tags) {
+            tagsName.add(tag.getName());
+        }
+        problemVO.setTags(tagsName);
         return problemVO;
     }
 
