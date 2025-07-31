@@ -113,8 +113,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         List<UserVO> userVOList = userList.stream().map(this::toVO).collect(Collectors.toList());
         userVOPage.setData(userVOList);
         userVOPage.setTotal(userPage.getTotal());
-        userVOPage.setCurrent(userVOPage.getCurrent());
-        userVOPage.setPageSize(userVOPage.getPageSize());
+        userVOPage.setCurrent(userPage.getCurrent());
+        userVOPage.setPageSize((int) userPage.getSize());
         userVOPage.setTotalPages(userPage.getPages());
         return userVOPage;
     }
