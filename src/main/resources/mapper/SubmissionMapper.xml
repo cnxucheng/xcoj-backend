@@ -8,7 +8,6 @@
             <id property="submissionId" column="submissionId" />
             <result property="userId" column="userId" />
             <result property="problemId" column="problemId" />
-            <result property="contestId" column="contestId" />
             <result property="lang" column="lang" />
             <result property="code" column="code" />
             <result property="judgeResult" column="judgeResult" />
@@ -19,7 +18,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        submissionId,userId,problemId,contestId,lang,code,
+        submissionId,userId,problemId,lang,code,
         judgeResult,usedTime,usedMemory,createTime,isDelete
     </sql>
 </mapper>

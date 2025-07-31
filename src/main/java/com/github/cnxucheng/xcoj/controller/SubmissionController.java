@@ -8,6 +8,7 @@ import com.github.cnxucheng.xcoj.common.ErrorCode;
 import com.github.cnxucheng.xcoj.common.MyPage;
 import com.github.cnxucheng.xcoj.common.Result;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
+import com.github.cnxucheng.xcoj.judge.JudgeService;
 import com.github.cnxucheng.xcoj.model.dto.submision.SubmissionQueryDTO;
 import com.github.cnxucheng.xcoj.model.dto.submision.SubmissionSubmitDTO;
 import com.github.cnxucheng.xcoj.model.entity.Submission;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/submission")
@@ -32,6 +34,9 @@ public class SubmissionController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private JudgeService judgeService;
+
     @PostMapping("/submit")
     @AuthCheck(role = UserRoleEnum.USER)
     public Result<?> submit(@RequestBody SubmissionSubmitDTO submitDTO, HttpServletRequest request) {
@@ -40,7 +45,9 @@ public class SubmissionController {
         User user  = userService.getLoginUser(request);
         submission.setUserId(user.getUserId());
         submissionService.save(submission);
-        // todo 判题
+        CompletableFuture.runAsync(() -> {
+            judgeService.doJudge(submission);
+        });
         return Result.success("ok");
     }
 

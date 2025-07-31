@@ -23,11 +23,6 @@ public class SubmissionVO implements Serializable {
     private Long problemId;
 
     /**
-     * 比赛id, 如果不为空, 则表示为比赛中的提交
-     */
-    private Long contestId;
-
-    /**
      * 编程语言
      */
     private String lang;

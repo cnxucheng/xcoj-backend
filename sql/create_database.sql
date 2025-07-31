@@ -46,7 +46,6 @@ CREATE TABLE submission (
     submissionId BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '提交id',
     userId BIGINT NOT NULL COMMENT '用户id',
     problemId BIGINT NOT NULL COMMENT '题目id',
-    contestId BIGINT NULL COMMENT '比赛id, 如果不为空, 则表示为比赛中的提交',
     lang varchar(64) NOT NULL COMMENT '编程语言',
     code TEXT NOT NULL COMMENT '提交代码',
     judgeResult VARCHAR(256) DEFAULT 'In queue' COMMENT '判题结果',
@@ -55,8 +54,7 @@ CREATE TABLE submission (
     createTime DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     isDelete TINYINT DEFAULT 0 COMMENT '是否删除',
     INDEX idx_userId (userId),
-    INDEX idx_problemId (problemId),
-    INDEX idx_contestId (contestId)
+    INDEX idx_problemId (problemId)
 ) COMMENT='提交记录表';
 
 -- 用户通过表

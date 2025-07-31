@@ -2,7 +2,6 @@ package com.github.cnxucheng.xcoj.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -48,7 +47,6 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
             userId = user.getUserId();
         }
         Long problemId = submissionQueryDTO.getProblemId();
-        Long contestId = submissionQueryDTO.getContestId();
         String lang = submissionQueryDTO.getLang();
         String judgeResult = submissionQueryDTO.getJudgeResult();
         if (submissionId != null) {
@@ -59,9 +57,6 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
         }
         if (problemId != null) {
             queryWrapper.eq(Submission::getProblemId, problemId);
-        }
-        if (contestId != null) {
-            queryWrapper.eq(Submission::getContestId, contestId);
         }
         if (StringUtils.isNotBlank(lang)) {
             queryWrapper.eq(Submission::getLang, lang);
