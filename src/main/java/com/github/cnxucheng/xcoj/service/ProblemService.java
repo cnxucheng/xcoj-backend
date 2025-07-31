@@ -18,7 +18,7 @@ public interface ProblemService extends IService<Problem> {
 
     void validProblem(Problem problem);
 
-    QueryWrapper<Problem> getQueryWrapper(ProblemQueryDTO problemQueryDTO);
+    QueryWrapper<Problem> getQueryWrapper(ProblemQueryDTO problemQueryDTO, Integer isAdmin);
 
     ProblemSampleVO getProblemSampleVO(Problem problem);
 

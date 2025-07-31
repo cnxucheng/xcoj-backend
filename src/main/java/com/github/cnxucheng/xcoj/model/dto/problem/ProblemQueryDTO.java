@@ -22,11 +22,6 @@ public class ProblemQueryDTO implements Serializable {
     private String title;
 
     /**
-     * 标签
-     */
-    private String tag;
-
-    /**
      * 题目描述
      */
     private String description;

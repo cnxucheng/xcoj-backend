@@ -55,6 +55,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
         String outputDescription = question.getOutputDescription();
         String note = question.getNote();
         String sample = question.getSample();
+        String judgeCase = question.getJudgeCase();
         if (title != null && title.length() > 80) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "标题过长");
         }
@@ -73,10 +74,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
         if (sample != null && sample.length() > 8192) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "样例过大");
         }
+        if (judgeCase != null && judgeCase.length() > 8192) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试用例过大");
+        }
     }
 
     @Override
-    public QueryWrapper<Problem> getQueryWrapper(ProblemQueryDTO problemQueryDTO) {
+    public QueryWrapper<Problem> getQueryWrapper(ProblemQueryDTO problemQueryDTO, Integer isAdmin) {
         QueryWrapper<Problem> queryWrapper = new QueryWrapper<>();
         if (problemQueryDTO == null) {
             return queryWrapper;
@@ -88,8 +92,10 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
         queryWrapper.like(StringUtils.isNotBlank(description), "description", description);
         queryWrapper.eq(ObjectUtils.isNotEmpty(problemId), "problemId", problemId);
-        queryWrapper.eq("isHidden", false);
-        queryWrapper.eq("isDelete", false);
+        if (isAdmin == 0) {
+            queryWrapper.eq("isHidden", 0);
+        }
+        queryWrapper.eq("isDelete", 0);
         return queryWrapper;
     }
 

@@ -1,6 +1,7 @@
 package com.github.cnxucheng.xcoj.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.cnxucheng.xcoj.annotation.AuthCheck;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
@@ -8,6 +9,7 @@ import com.github.cnxucheng.xcoj.common.MyPage;
 import com.github.cnxucheng.xcoj.common.PageRequest;
 import com.github.cnxucheng.xcoj.common.Result;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
+import com.github.cnxucheng.xcoj.model.dto.problem.ProblemQueryDTO;
 import com.github.cnxucheng.xcoj.model.entity.Problem;
 
 import com.github.cnxucheng.xcoj.model.entity.User;
@@ -55,23 +57,16 @@ public class ProblemController {
     }
 
     @PostMapping("/list")
-    public Result<MyPage<ProblemSampleVO>> find(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
-        LambdaQueryWrapper<Problem> queryWrapper = new LambdaQueryWrapper<>();
-        Page<Problem> page;
+    public Result<MyPage<ProblemSampleVO>> find(@RequestBody ProblemQueryDTO queryDTO, HttpServletRequest request) {
+        QueryWrapper<Problem> queryWrapper = new QueryWrapper<>();
         User user = userService.getLoginUser(request);
-        if (user == null) {
-            Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
-            queryWrapper.eq(Problem::getIsHidden, 0);
-            page = problemService.page(qpage, queryWrapper);
-        } else if (Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole())).getWeight() <
-                UserRoleEnum.ADMIN.getWeight()) {
-            queryWrapper.eq(Problem::getIsHidden, 0);
-            Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
-            page = problemService.page(qpage, queryWrapper);
+        Page<Problem> qpage = new Page<>(queryDTO.getCurrent(), queryDTO.getPageSize());
+        if (user != null && Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole())).getWeight() >= UserRoleEnum.ADMIN.getWeight()) {
+            queryWrapper = problemService.getQueryWrapper(queryDTO, 1);
         } else {
-            Page<Problem> qpage = new Page<>(pageRequest.getCurrent(), pageRequest.getPageSize());
-            page = problemService.page(qpage, queryWrapper);
+            queryWrapper = problemService.getQueryWrapper(queryDTO, 0);
         }
+        Page<Problem> page = problemService.page(qpage, queryWrapper);
         return Result.success(problemService.getProblemSampleVOPage(page));
     }
 }
