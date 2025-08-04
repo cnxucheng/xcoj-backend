@@ -45,7 +45,8 @@ public class JudgeServiceImpl implements JudgeService {
         wrapper.eq(Submission::getSubmissionId, submission.getSubmissionId());
         wrapper.set(Submission::getJudgeResult, "Running");
         submissionService.update(wrapper);
-        JudgeResponse response = systemSandbox.judge(getRequest(submission));
+        JudgeRequest request = getRequest(submission);
+        JudgeResponse response = systemSandbox.judge(request);
 
         log.info("Judge response: {}", JSONUtil.toJsonStr(response));
 
@@ -53,19 +54,25 @@ public class JudgeServiceImpl implements JudgeService {
             throw new BusinessException(ErrorCode.API_ERROR, "判题API调用失败");
         }
         if (response.getResultCode() == 0) {
-            submission.setUsedTime(response.getUsedTime());
-            submission.setUsedMemory(response.getUsedMemory());
-            List<String> output = response.getOutput();
-            Problem problem = problemService.getById(submission.getProblemId());
-            List<TestCase> ans = JSONUtil.toList(problem.getJudgeCase(), TestCase.class);
-            if (output.size() != ans.size()) {
+            if (response.getUsedTime() >= request.getTimeLimit()) {
                 response.setResultCode(-1);
-                response.setMessage("Wrong Answer");
-            }
-            for (int i = 0; i < output.size(); i++) {
-                if (!output.get(i).trim().equals(ans.get(i).getOutput().trim())) {
+                response.setMessage("Time Limit Exceeded");
+                response.setUsedTime(getRequest(submission).getTimeLimit() + 1);
+            } else {
+                submission.setUsedTime(response.getUsedTime());
+                submission.setUsedMemory(response.getUsedMemory());
+                List<String> output = response.getOutput();
+                Problem problem = problemService.getById(submission.getProblemId());
+                List<TestCase> ans = JSONUtil.toList(problem.getJudgeCase(), TestCase.class);
+                if (output.size() != ans.size()) {
                     response.setResultCode(-1);
                     response.setMessage("Wrong Answer");
+                }
+                for (int i = 0; i < output.size(); i++) {
+                    if (!output.get(i).trim().equals(ans.get(i).getOutput().trim())) {
+                        response.setResultCode(-1);
+                        response.setMessage("Wrong Answer");
+                    }
                 }
             }
         }

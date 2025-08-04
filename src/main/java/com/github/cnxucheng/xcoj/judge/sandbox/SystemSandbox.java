@@ -14,7 +14,7 @@ public class SystemSandbox implements Sandbox {
 
     @Override
     public JudgeResponse judge(JudgeRequest request) {
-        String url = "http://localhost:8001/run";
+        String url = "http://192.168.1.110:8001/run";
         String requestString = JSONUtil.toJsonStr(request);
         String responseStr = HttpUtil.createPost(url)
                 .header("auth", "xcoj-system-auth-secret")
