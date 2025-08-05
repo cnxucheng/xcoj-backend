@@ -44,7 +44,15 @@ public class UserVO implements Serializable {
      */
     private Integer submitNum;
 
+    /**
+     * 通过的题目
+     */
     private List<Long> solved;
+
+    /**
+     * 未通过的题目
+     */
+    private List<Long> notSolved;
 
     /**
      * 用户创建时间

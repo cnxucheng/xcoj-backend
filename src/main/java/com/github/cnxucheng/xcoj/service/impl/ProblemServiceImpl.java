@@ -1,8 +1,8 @@
 package com.github.cnxucheng.xcoj.service.impl;
 
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,20 +12,14 @@ import com.github.cnxucheng.xcoj.common.MyPage;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
 import com.github.cnxucheng.xcoj.mapper.ProblemMapper;
 import com.github.cnxucheng.xcoj.model.dto.problem.ProblemQueryDTO;
-import com.github.cnxucheng.xcoj.model.entity.ProblemTag;
 import com.github.cnxucheng.xcoj.model.entity.TestCase;
-import com.github.cnxucheng.xcoj.model.entity.Tag;
 import com.github.cnxucheng.xcoj.model.vo.ProblemSampleVO;
 import com.github.cnxucheng.xcoj.model.vo.ProblemVO;
 import com.github.cnxucheng.xcoj.service.ProblemService;
 import com.github.cnxucheng.xcoj.model.entity.Problem;
-import com.github.cnxucheng.xcoj.service.ProblemTagService;
-import com.github.cnxucheng.xcoj.service.TagService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,44 +32,30 @@ import java.util.stream.Collectors;
 public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
     implements ProblemService {
 
-    @Resource
-    private ProblemTagService problemTagService;
-
-    @Resource
-    private TagService tagService;
-
     @Override
-    public void validProblem(Problem question) {
-        if (question == null) {
+    public void validProblem(Problem problem) {
+        if (problem == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        String title = question.getTitle();
-        String description = question.getDescription();
-        String inputDescription = question.getInputDescription();
-        String outputDescription = question.getOutputDescription();
-        String note = question.getNote();
-        String sample = question.getSample();
-        String judgeCase = question.getJudgeCase();
+        String title = problem.getTitle();
+        String content = problem.getContent();
+        String solution = problem.getSolution();
+        String judgeCase = problem.getJudgeCase();
+        String tags = problem.getTags();
         if (title != null && title.length() > 80) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "标题过长");
         }
-        if (description != null && description.length() > 8192) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目描述过长");
+        if (content != null && content.length() > 8192) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目内容过长");
         }
-        if (inputDescription != null && inputDescription.length() > 8192) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "输入描述过长");
-        }
-        if (outputDescription != null && outputDescription.length() > 8192) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "输出描述过长");
-        }
-        if (note != null && note.length() > 8192) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "备注过长");
-        }
-        if (sample != null && sample.length() > 8192) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "样例过大");
+        if (solution != null && solution.length() > 8192) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "题解过长");
         }
         if (judgeCase != null && judgeCase.length() > 8192) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "测试用例过大");
+        }
+        if (tags.length() > 100) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "标签过多或过长");
         }
     }
 
@@ -87,11 +67,17 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
         }
         Long problemId = problemQueryDTO.getProblemId();
         String title = problemQueryDTO.getTitle();
-        String description = problemQueryDTO.getDescription();
+        String content = problemQueryDTO.getContent();
+        List<String> tags = problemQueryDTO.getTags();
         // 拼接查询条件
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
-        queryWrapper.like(StringUtils.isNotBlank(description), "description", description);
+        queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
         queryWrapper.eq(ObjectUtils.isNotEmpty(problemId), "problemId", problemId);
+        if (CollectionUtils.isNotEmpty(tags)) {
+            for (String tag : tags) {
+                queryWrapper.like("tags", "\"" + tag + "\"");
+            }
+        }
         if (isAdmin == 0) {
             queryWrapper.eq("isHidden", 0);
         }
@@ -101,17 +87,12 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
 
     @Override
     public ProblemSampleVO getProblemSampleVO(Problem problem) {
-        List<Tag> tags = getTagsByProblemId(problem.getProblemId());
-        List<String> tagsName = new ArrayList<>();
-        for (Tag tag : tags) {
-            tagsName.add(tag.getName());
-        }
         return ProblemSampleVO.builder()
                 .problemId(problem.getProblemId())
                 .title(problem.getTitle())
                 .acceptedNum(problem.getAcceptedNum())
                 .submitNum(problem.getSubmitNum())
-                .tags(tagsName)
+                .tags(JSONUtil.toList(problem.getTags(), String.class))
                 .build();
     }
 
@@ -119,16 +100,9 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
     public ProblemVO getProblemVO(Problem problem) {
         ProblemVO problemVO = new ProblemVO();
         BeanUtils.copyProperties(problem, problemVO);
-        List<TestCase> samples = JSONUtil.toList(problem.getSample(), TestCase.class);
-        problemVO.setSample(samples);
         List<TestCase> testCases = JSONUtil.toList(problem.getJudgeCase(), TestCase.class);
         problemVO.setJudgeCase(testCases);
-        List<Tag> tags = getTagsByProblemId(problem.getProblemId());
-        List<String> tagsName = new ArrayList<>();
-        for (Tag tag : tags) {
-            tagsName.add(tag.getName());
-        }
-        problemVO.setTags(tagsName);
+        problemVO.setTags(JSONUtil.toList(problem.getTags(), String.class));
         return problemVO;
     }
 
@@ -147,17 +121,6 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
         List<ProblemSampleVO> data = records.stream().map(this::getProblemSampleVO).collect(Collectors.toList());
         result.setData(data);
         return result;
-    }
-
-    /**
-     * 根据题目id返回标签列表
-     */
-    private List<Tag> getTagsByProblemId(Long problemId) {
-        List<Long> tagIds = problemTagService.list(
-                new LambdaQueryWrapper<ProblemTag>()
-                        .eq(ProblemTag::getProblemId, problemId)
-        ).stream().map(ProblemTag::getTagId).collect(Collectors.toList());
-        return tagService.listByIds(tagIds);
     }
 }
 

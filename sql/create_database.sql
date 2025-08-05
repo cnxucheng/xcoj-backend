@@ -23,11 +23,9 @@ CREATE TABLE user (
 CREATE TABLE problem (
     problemId BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '题目id',
     title VARCHAR(512) NOT NULL COMMENT '题目标题',
-    description TEXT NOT NULL COMMENT '题目描述',
-    inputDescription TEXT NOT NULL COMMENT '输入描述',
-    outputDescription TEXT NOT NULL COMMENT '输出描述',
-    note TEXT NULL COMMENT '题目备注',
-    sample TEXT NULL COMMENT '题目样例（json）',
+    content TEXT NOT NULL COMMENT '题目描述',
+    solution TEXT COMMENT '题解',
+    tags varchar(1024) COMMENT '题目标签',
     timeLimit int NOT NULL COMMENT '题目时间限制(MS)',
     memoryLimit int NOT NULL COMMENT '空间限制(KB)',
     judgeCase text NOT NULL COMMENT '判题数据(json)',
@@ -58,28 +56,13 @@ CREATE TABLE submission (
 ) COMMENT='提交记录表';
 
 -- 用户通过表
-CREATE TABLE user_accept (
+CREATE TABLE user_status (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'id',
     userId BIGINT NOT NULL COMMENT '用户id',
     problemId BIGINT NOT NULL COMMENT '题目id',
+    isAc TINYINT NOT NULL COMMENT '是否通过',
     createTime DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     INDEX idx_userId (userId),
     INDEX idx_problemId (problemId),
     UNIQUE KEY uq_user_problem (userId, problemId)
 ) COMMENT='用户通过题目表';
-
--- 标签表
-CREATE TABLE tag (
-    tagId BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '标签id',
-    name VARCHAR(128) NOT NULL UNIQUE COMMENT '标签名称'
-) COMMENT='标签表';
-
--- 题目标签映射表
-CREATE TABLE problem_tag (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键id',
-    problemId BIGINT NOT NULL COMMENT '题目id',
-    tagId BIGINT NOT NULL COMMENT '标签id',
-    INDEX idx_problem (problemId),
-    INDEX idx_tag (tagId),
-    UNIQUE KEY uq_problem_tag (problemId, tagId)
-) COMMENT='题目标签映射表';

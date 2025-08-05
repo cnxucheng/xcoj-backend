@@ -36,21 +36,20 @@ public class ProblemController {
 
     @GetMapping("/")
     @AuthCheck(role = UserRoleEnum.USER)
-    @SuppressWarnings("all")
     public Result<ProblemVO> findById(@RequestParam(value = "id") Integer id, HttpServletRequest request) {
         Problem problem  = problemService.getById(id);
         User user = userService.getLoginUser(request);
         UserRoleEnum userRoleEnum = (user != null ? UserRoleEnum.getEnum(user.getUserRole()) : UserRoleEnum.BAN);
         // 如果是隐藏的题目，要求具有管理员权限
         if (problem.getIsHidden() == 1) {
-            if (userRoleEnum.getWeight() <
-            UserRoleEnum.ADMIN.getWeight()) {
+            if (userRoleEnum != null && userRoleEnum.getWeight() <
+                    UserRoleEnum.ADMIN.getWeight()) {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
             }
         }
         ProblemVO problemVO = problemService.getProblemVO(problem);
         // 如果没有管理员权限，不能获取到测试数据
-        if (userRoleEnum.getWeight() < UserRoleEnum.ADMIN.getWeight()) {
+        if (userRoleEnum != null && userRoleEnum.getWeight() < UserRoleEnum.ADMIN.getWeight()) {
             problemVO.setJudgeCase(null);
         }
         return Result.success(problemVO);
@@ -58,7 +57,7 @@ public class ProblemController {
 
     @PostMapping("/list")
     public Result<MyPage<ProblemSampleVO>> find(@RequestBody ProblemQueryDTO queryDTO, HttpServletRequest request) {
-        QueryWrapper<Problem> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<Problem> queryWrapper;
         User user = userService.getLoginUser(request);
         Page<Problem> qpage = new Page<>(queryDTO.getCurrent(), queryDTO.getPageSize());
         if (user != null && Objects.requireNonNull(UserRoleEnum.getEnum(user.getUserRole())).getWeight() >= UserRoleEnum.ADMIN.getWeight()) {

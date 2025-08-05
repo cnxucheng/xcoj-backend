@@ -1,6 +1,5 @@
 package com.github.cnxucheng.xcoj.model.vo;
 
-import com.github.cnxucheng.xcoj.model.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

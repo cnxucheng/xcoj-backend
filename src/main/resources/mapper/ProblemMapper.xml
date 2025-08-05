@@ -7,11 +7,9 @@
     <resultMap id="BaseResultMap" type="com.github.cnxucheng.xcoj.model.entity.Problem">
             <id property="problemId" column="problemId" />
             <result property="title" column="title" />
-            <result property="description" column="description" />
-            <result property="inputDescription" column="inputDescription" />
-            <result property="outputDescription" column="outputDescription" />
-            <result property="note" column="note" />
-            <result property="sample" column="sample" />
+            <result property="content" column="content" />
+            <result property="solution" column="solution" />
+            <result property="tags" column="tags" />
             <result property="timeLimit" column="timeLimit" />
             <result property="memoryLimit" column="memoryLimit" />
             <result property="judgeCase" column="judgeCaseURL" />
@@ -25,8 +23,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        problemId,title,description,inputDescription,outputDescription,note,
-        sample,timeLimit,memoryLimit,judgeCase,acceptedNum,
+        problemId,title,content,solution,tags,
+        timeLimit,memoryLimit,judgeCase,acceptedNum,
         submitNum,userId,createTime,updateTime,isHidden,
         isDelete
     </sql>

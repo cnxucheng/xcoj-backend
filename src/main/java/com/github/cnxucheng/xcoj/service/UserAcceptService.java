@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface UserAcceptService extends IService<UserAccept> {
 
-    List<Long> getUserAcceptList(Long userId);
+    List<Long> getUserStatusList(Long userId, Integer status);
 }

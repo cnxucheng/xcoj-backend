@@ -31,6 +31,11 @@ public class UserAccept {
     private Long problemId;
 
     /**
+     * 是否通过
+     */
+    private Integer isAc;
+
+    /**
      * 创建时间
      */
     private Date createTime;

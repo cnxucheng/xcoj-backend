@@ -1,7 +1,6 @@
 package com.github.cnxucheng.xcoj.model.vo;
 
 import com.github.cnxucheng.xcoj.model.entity.TestCase;
-import com.github.cnxucheng.xcoj.model.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,29 +30,19 @@ public class ProblemVO implements Serializable {
     private String title;
 
     /**
-     * 题目描述
+     * 题目内容
      */
-    private String description;
+    private String content;
 
     /**
-     * 输入描述
+     * 题解
      */
-    private String inputDescription;
+    private String solution;
 
     /**
-     * 输出描述
+     * 标签
      */
-    private String outputDescription;
-
-    /**
-     * 题目备注
-     */
-    private String note;
-
-    /**
-     * 题目样例
-     */
-    private List<TestCase> sample;
+    private List<String> tags;
 
     /**
      * 测试数据
@@ -69,11 +58,6 @@ public class ProblemVO implements Serializable {
      * 空间限制(KB)
      */
     private Integer memoryLimit;
-
-    /**
-     * 标签
-     */
-    private List<String> tags;
 
     /**
      * 通过数

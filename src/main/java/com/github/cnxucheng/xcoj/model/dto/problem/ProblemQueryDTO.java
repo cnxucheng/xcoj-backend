@@ -3,6 +3,7 @@ package com.github.cnxucheng.xcoj.model.dto.problem;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 题目查询dto
@@ -22,9 +23,14 @@ public class ProblemQueryDTO implements Serializable {
     private String title;
 
     /**
-     * 题目描述
+     * 题目内容
      */
-    private String description;
+    private String content;
+
+    /**
+     * 标签
+     */
+    private List<String> tags;
 
     /**
      * 当前页号

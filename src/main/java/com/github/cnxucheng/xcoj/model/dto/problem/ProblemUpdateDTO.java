@@ -18,35 +18,21 @@ public class ProblemUpdateDTO implements Serializable {
      * 题目id
      */
     private Long problemId;
+
     /**
      * 题目标题
      */
     private String title;
 
     /**
-     * 题目描述
+     * 题目内容
      */
-    private String description;
+    private String content;
 
     /**
-     * 输入描述
+     * 题解
      */
-    private String inputDescription;
-
-    /**
-     * 输出描述
-     */
-    private String outputDescription;
-
-    /**
-     * 题目备注
-     */
-    private String note;
-
-    /**
-     * 题目样例（json）
-     */
-    private List<TestCase> sample;
+    private String solution;
 
     /**
      * 标签

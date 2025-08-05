@@ -23,14 +23,16 @@ public class UserAcceptServiceImpl extends ServiceImpl<UserAcceptMapper, UserAcc
     implements UserAcceptService {
 
     @Override
-    public List<Long> getUserAcceptList(Long userId) {
+    public List<Long> getUserStatusList(Long userId, Integer status) {
         LambdaQueryWrapper<UserAccept> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UserAccept::getUserId, userId)
+                .eq(UserAccept::getIsAc, status)
                 .select(UserAccept::getProblemId);
         return this.list(wrapper).stream()
                 .map(UserAccept::getProblemId)
                 .collect(Collectors.toList());
     }
+
 }
 
 

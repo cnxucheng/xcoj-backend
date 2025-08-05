@@ -8,10 +8,11 @@
             <id property="id" column="id" />
             <result property="userId" column="userId" />
             <result property="problemId" column="problemId" />
+            <result property="isAc" column="isAc" />
             <result property="createTime" column="createTime" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,userId,problemId,createTime
+        id,userId,problemId,isAc,createTime
     </sql>
 </mapper>
