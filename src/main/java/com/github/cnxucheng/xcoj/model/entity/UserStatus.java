@@ -11,9 +11,9 @@ import lombok.Data;
  * @author : xucheng
  * @since : 2025-7-8
  */
-@TableName(value ="user_accept")
+@TableName(value ="user_status")
 @Data
-public class UserAccept {
+public class UserStatus {
     /**
      * id
      */

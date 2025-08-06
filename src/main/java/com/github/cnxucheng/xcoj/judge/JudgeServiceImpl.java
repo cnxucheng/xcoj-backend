@@ -11,7 +11,7 @@ import com.github.cnxucheng.xcoj.judge.sandbox.Sandbox;
 import com.github.cnxucheng.xcoj.model.entity.*;
 import com.github.cnxucheng.xcoj.service.ProblemService;
 import com.github.cnxucheng.xcoj.service.SubmissionService;
-import com.github.cnxucheng.xcoj.service.UserAcceptService;
+import com.github.cnxucheng.xcoj.service.UserStatusService;
 import com.github.cnxucheng.xcoj.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,7 @@ public class JudgeServiceImpl implements JudgeService {
     private UserService userService;
 
     @Resource
-    private UserAcceptService userAcceptService;
+    private UserStatusService userStatusService;
 
     @Override
     public void doJudge(Submission submission) {
@@ -76,18 +76,18 @@ public class JudgeServiceImpl implements JudgeService {
                 }
             }
         }
-        LambdaQueryWrapper<UserAccept> userAcceptWrapper = new LambdaQueryWrapper<>();
-        userAcceptWrapper.eq(UserAccept::getUserId, submission.getUserId());
-        userAcceptWrapper.eq(UserAccept::getProblemId, submission.getProblemId());
-        List<UserAccept> userAccepts = userAcceptService.list(userAcceptWrapper);
+        LambdaQueryWrapper<UserStatus> userAcceptWrapper = new LambdaQueryWrapper<>();
+        userAcceptWrapper.eq(UserStatus::getUserId, submission.getUserId());
+        userAcceptWrapper.eq(UserStatus::getProblemId, submission.getProblemId());
+        List<UserStatus> userAccepts = userStatusService.list(userAcceptWrapper);
         if (userAccepts == null || userAccepts.isEmpty()) {
             updateProblem(submission.getProblemId(), response.getResultCode() == 0 ? 1 : 0);
             updateUser(submission.getUserId(), response.getResultCode() == 0 ? 1 : 0);
             if (response.getResultCode() == 0) {
-                UserAccept userAccept = new UserAccept();
+                UserStatus userAccept = new UserStatus();
                 userAccept.setUserId(submission.getUserId());
                 userAccept.setProblemId(submission.getProblemId());
-                userAcceptService.save(userAccept);
+                userStatusService.save(userAccept);
             }
         }
         if (response.getResultCode() == 0) {

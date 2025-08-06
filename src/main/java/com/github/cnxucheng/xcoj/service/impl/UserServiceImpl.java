@@ -11,7 +11,7 @@ import com.github.cnxucheng.xcoj.mapper.UserMapper;
 import com.github.cnxucheng.xcoj.model.dto.user.UserLoginDTO;
 import com.github.cnxucheng.xcoj.model.dto.user.UserRegisterDTO;
 import com.github.cnxucheng.xcoj.model.vo.UserVO;
-import com.github.cnxucheng.xcoj.service.UserAcceptService;
+import com.github.cnxucheng.xcoj.service.UserStatusService;
 import com.github.cnxucheng.xcoj.service.UserService;
 import com.github.cnxucheng.xcoj.model.entity.User;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private final String SALT = "xc_oj_xucheng";
 
     @Resource
-    private UserAcceptService userAcceptService;
+    private UserStatusService userStatusService;
 
     @Override
     public UserVO login(UserLoginDTO userLoginDTO, HttpServletRequest request) {
@@ -97,8 +97,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .userRole(user.getUserRole())
                 .submitNum(user.getSubmitNum())
                 .createTime(user.getCreateTime())
-                .solved(userAcceptService.getUserStatusList(user.getUserId(), 1))
-                .notSolved(userAcceptService.getUserStatusList(user.getUserId(), 0))
+                .solved(userStatusService.getUserStatusList(user.getUserId(), 1))
+                .notSolved(userStatusService.getUserStatusList(user.getUserId(), 0))
                 .build();
     }
 

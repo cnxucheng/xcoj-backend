@@ -1,16 +1,16 @@
 package com.github.cnxucheng.xcoj.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.cnxucheng.xcoj.model.entity.UserAccept;
+import com.github.cnxucheng.xcoj.model.entity.UserStatus;
 
 import java.util.List;
 
 /**
- * UserAcceptService
+ * UserStatusService
  * @author : xucheng
  * @since : 2025-7-8
  */
-public interface UserAcceptService extends IService<UserAccept> {
+public interface UserStatusService extends IService<UserStatus> {
 
     List<Long> getUserStatusList(Long userId, Integer status);
 }
