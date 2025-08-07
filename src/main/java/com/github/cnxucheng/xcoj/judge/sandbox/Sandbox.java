@@ -1,7 +1,7 @@
 package com.github.cnxucheng.xcoj.judge.sandbox;
 
-import com.github.cnxucheng.xcoj.judge.model.JudgeRequest;
-import com.github.cnxucheng.xcoj.judge.model.JudgeResponse;
+import com.github.cnxucheng.xcoj.model.dto.judge.JudgeRequest;
+import com.github.cnxucheng.xcoj.model.vo.JudgeResponse;
 
 public interface Sandbox {
 

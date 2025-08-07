@@ -1,8 +1,10 @@
 package com.github.cnxucheng.xcoj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.cnxucheng.xcoj.mapper.UserAcceptMapper;
+import com.github.cnxucheng.xcoj.model.enums.UserProblemStatusEnum;
 import com.github.cnxucheng.xcoj.service.UserStatusService;
 import com.github.cnxucheng.xcoj.model.entity.UserStatus;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,29 @@ public class UserStatusServiceImpl extends ServiceImpl<UserAcceptMapper, UserSta
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public UserProblemStatusEnum getUserProblemStatus(Long userId, Long problemId) {
+        LambdaQueryWrapper<UserStatus> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserStatus::getUserId, userId)
+                .eq(UserStatus::getProblemId, problemId);
+        UserStatus userStatus = this.getOne(wrapper);
+        if (userStatus == null) {
+            return UserProblemStatusEnum.NO_SUBMIT;
+        }
+        if (userStatus.getIsAc() == 1) {
+            return UserProblemStatusEnum.AC;
+        }
+        return UserProblemStatusEnum.NOT_AC;
+    }
+
+    @Override
+    public void updateStatus(Long userId, Long problemId, int status) {
+        LambdaUpdateWrapper<UserStatus> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(UserStatus::getUserId, userId)
+                .eq(UserStatus::getProblemId, problemId)
+                .set(UserStatus::getIsAc, status);
+        this.update(updateWrapper);
+    }
 }
 
 

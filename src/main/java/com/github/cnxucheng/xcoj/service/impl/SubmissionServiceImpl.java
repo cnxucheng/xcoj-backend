@@ -2,10 +2,12 @@ package com.github.cnxucheng.xcoj.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.cnxucheng.xcoj.common.MyPage;
+import com.github.cnxucheng.xcoj.model.vo.JudgeResponse;
 import com.github.cnxucheng.xcoj.mapper.SubmissionMapper;
 import com.github.cnxucheng.xcoj.model.dto.submision.SubmissionQueryDTO;
 import com.github.cnxucheng.xcoj.model.entity.User;
@@ -86,6 +88,16 @@ public class SubmissionServiceImpl extends ServiceImpl<SubmissionMapper, Submiss
         myPage.setTotal(page.getTotal());
         myPage.setTotalPages(page.getPages());
         return myPage;
+    }
+
+    @Override
+    public void updateSubmissionJudgeInfo(Long submissionId, JudgeResponse response) {
+        LambdaUpdateWrapper<Submission> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Submission::getSubmissionId, submissionId);
+        wrapper.set(Submission::getJudgeResult, response.getMessage());
+        wrapper.set(Submission::getUsedTime, response.getUsedTime());
+        wrapper.set(Submission::getUsedMemory, response.getUsedMemory());
+        this.update(wrapper);
     }
 }
 

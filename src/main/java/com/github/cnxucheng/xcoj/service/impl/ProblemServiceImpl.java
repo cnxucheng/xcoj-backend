@@ -1,7 +1,9 @@
 package com.github.cnxucheng.xcoj.service.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -83,6 +85,18 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem>
         }
         queryWrapper.eq("isDelete", 0);
         return queryWrapper;
+    }
+
+    @Override
+    public void updateStatistics(Long problemId, Integer isAc) {
+        Problem problem = this.getById(problemId);
+        LambdaUpdateWrapper<Problem> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Problem::getProblemId, problemId);
+        updateWrapper.set(Problem::getSubmitNum, problem.getSubmitNum() + 1);
+        if (isAc == 1) {
+            updateWrapper.set(Problem::getAcceptedNum, problem.getAcceptedNum() + 1);
+        }
+        this.update(updateWrapper);
     }
 
     @Override

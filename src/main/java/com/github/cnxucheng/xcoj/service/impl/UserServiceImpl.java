@@ -1,6 +1,7 @@
 package com.github.cnxucheng.xcoj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
@@ -86,6 +87,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         long userId = currentUser.getUserId();
         currentUser = this.getById(userId);
         return currentUser;
+    }
+
+    @Override
+    public void updateStatistics(Long userId, Integer isAc) {
+        User user = this.getById(userId);
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getUserId, userId);
+        updateWrapper.set(User::getSubmitNum, user.getSubmitNum() + 1);
+        if (isAc == 1) {
+            updateWrapper.set(User::getAcceptedNum, user.getAcceptedNum() + 1);
+        }
+        this.update(updateWrapper);
     }
 
     @Override

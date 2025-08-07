@@ -24,6 +24,8 @@ public interface UserService extends IService<User> {
 
     User getLoginUser(HttpServletRequest request);
 
+    void updateStatistics(Long userId, Integer isAc);
+
     UserVO toVO(User user);
 
     MyPage<UserVO> toVOPage(Page<User> userPage);

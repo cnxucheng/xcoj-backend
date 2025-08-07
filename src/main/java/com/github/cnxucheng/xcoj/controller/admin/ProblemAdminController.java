@@ -38,7 +38,7 @@ public class ProblemAdminController {
         BeanUtil.copyProperties(problemAddDTO, problem);
         Long userId = userService.getLoginUser(request).getUserId();
         problem.setUserId(userId);
-        problem.setTags(JSONUtil.toJsonStr(problem.getTags()));
+        problem.setTags(JSONUtil.toJsonStr(problemAddDTO.getTags()));
         String testCaseString = JSONUtil.toJsonStr(problemAddDTO.getJudgeCase());
         problem.setJudgeCase(testCaseString);
         problemService.save(problem);
@@ -53,7 +53,6 @@ public class ProblemAdminController {
         String testCaseString = JSONUtil.toJsonStr(problemUpdateDTO.getJudgeCase());
         problem.setJudgeCase(testCaseString);
         problem.setTags(JSONUtil.toJsonStr(problemUpdateDTO.getTags()));
-
         LambdaUpdateWrapper<Problem> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(Problem::getProblemId, problem.getProblemId())
                 .set(Problem::getTitle, problem.getTitle())

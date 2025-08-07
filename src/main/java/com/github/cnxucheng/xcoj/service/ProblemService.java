@@ -20,6 +20,8 @@ public interface ProblemService extends IService<Problem> {
 
     QueryWrapper<Problem> getQueryWrapper(ProblemQueryDTO problemQueryDTO, Integer isAdmin);
 
+    void updateStatistics(Long problemId, Integer status);
+
     ProblemSampleVO getProblemSampleVO(Problem problem);
 
     ProblemVO getProblemVO(Problem problem);

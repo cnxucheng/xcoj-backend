@@ -1,4 +1,4 @@
-package com.github.cnxucheng.xcoj.judge.model;
+package com.github.cnxucheng.xcoj.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

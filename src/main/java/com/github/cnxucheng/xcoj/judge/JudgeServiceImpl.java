@@ -1,12 +1,12 @@
 package com.github.cnxucheng.xcoj.judge;
 
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.cnxucheng.xcoj.common.ErrorCode;
 import com.github.cnxucheng.xcoj.exception.BusinessException;
-import com.github.cnxucheng.xcoj.judge.model.JudgeRequest;
-import com.github.cnxucheng.xcoj.judge.model.JudgeResponse;
+import com.github.cnxucheng.xcoj.model.dto.judge.JudgeRequest;
+import com.github.cnxucheng.xcoj.model.enums.UserProblemStatusEnum;
+import com.github.cnxucheng.xcoj.model.vo.JudgeResponse;
 import com.github.cnxucheng.xcoj.judge.sandbox.Sandbox;
 import com.github.cnxucheng.xcoj.model.entity.*;
 import com.github.cnxucheng.xcoj.service.ProblemService;
@@ -38,6 +38,7 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Resource
     private UserStatusService userStatusService;
+
 
     @Override
     public void doJudge(Submission submission) {
@@ -76,24 +77,31 @@ public class JudgeServiceImpl implements JudgeService {
                 }
             }
         }
-        LambdaQueryWrapper<UserStatus> userAcceptWrapper = new LambdaQueryWrapper<>();
-        userAcceptWrapper.eq(UserStatus::getUserId, submission.getUserId());
-        userAcceptWrapper.eq(UserStatus::getProblemId, submission.getProblemId());
-        List<UserStatus> userAccepts = userStatusService.list(userAcceptWrapper);
-        if (userAccepts == null || userAccepts.isEmpty()) {
-            updateProblem(submission.getProblemId(), response.getResultCode() == 0 ? 1 : 0);
-            updateUser(submission.getUserId(), response.getResultCode() == 0 ? 1 : 0);
-            if (response.getResultCode() == 0) {
-                UserStatus userAccept = new UserStatus();
-                userAccept.setUserId(submission.getUserId());
-                userAccept.setProblemId(submission.getProblemId());
-                userStatusService.save(userAccept);
-            }
+        UserProblemStatusEnum userProblemStatusEnum = userStatusService.getUserProblemStatus(
+                submission.getProblemId(), submission.getUserId()
+        );
+        if (userProblemStatusEnum == UserProblemStatusEnum.NO_SUBMIT) {
+            UserStatus userStatus = UserStatus.builder()
+                    .userId(submission.getUserId())
+                    .problemId(submission.getProblemId())
+                    .isAc(response.getResultCode() == 0 ? 1 : 0).build();
+            userStatusService.save(userStatus);
+        }
+        if (userProblemStatusEnum == UserProblemStatusEnum.NOT_AC && response.getResultCode() == 0) {
+            userStatusService.updateStatus(
+                    submission.getUserId(),
+                    submission.getProblemId(),
+                    1
+            );
+        }
+        if (userProblemStatusEnum != UserProblemStatusEnum.AC) {
+            problemService.updateStatistics(submission.getProblemId(), response.getResultCode() == 0 ? 1 : 0);
+            userService.updateStatistics(submission.getUserId(), response.getResultCode() == 0 ? 1 : 0);
         }
         if (response.getResultCode() == 0) {
             response.setMessage("Accepted");
         }
-        updateSubmission(submission.getSubmissionId(), response);
+        submissionService.updateSubmissionJudgeInfo(submission.getSubmissionId(), response);
     }
 
     private JudgeRequest getRequest(Submission submission) {
@@ -112,30 +120,4 @@ public class JudgeServiceImpl implements JudgeService {
         return request;
     }
 
-    private void updateSubmission(Long submissionId, JudgeResponse response) {
-        LambdaUpdateWrapper<Submission> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(Submission::getSubmissionId, submissionId);
-        wrapper.set(Submission::getJudgeResult, response.getMessage());
-        wrapper.set(Submission::getUsedTime, response.getUsedTime());
-        wrapper.set(Submission::getUsedMemory, response.getUsedMemory());
-        submissionService.update(wrapper);
-    }
-
-    private void updateUser(Long userId, Integer ac) {
-        User user = userService.getById(userId);
-        LambdaUpdateWrapper<User> userWrapper = new LambdaUpdateWrapper<>();
-        userWrapper.eq(User::getUserId, userId);
-        userWrapper.set(User::getSubmitNum, user.getSubmitNum() + 1);
-        userWrapper.set(User::getAcceptedNum, user.getAcceptedNum() + ac);
-        userService.update(userWrapper);
-    }
-
-    private void updateProblem(Long problemId, Integer ac) {
-        Problem problem = problemService.getById(problemId);
-        LambdaUpdateWrapper<Problem> problemWrapper = new LambdaUpdateWrapper<>();
-        problemWrapper.eq(Problem::getProblemId, problemId);
-        problemWrapper.set(Problem::getSubmitNum, problem.getSubmitNum() + 1);
-        problemWrapper.set(Problem::getAcceptedNum, problem.getAcceptedNum() + ac);
-        problemService.update(problemWrapper);
-    }
 }
